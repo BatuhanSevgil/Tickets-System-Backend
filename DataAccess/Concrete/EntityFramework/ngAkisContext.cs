@@ -11,7 +11,7 @@ namespace DataAccess.Concrete.EntityFramework
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=ngAkis;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer(@"workstation id=ngAkisDB.mssql.somee.com;packet size=4096;user id=batuhan;pwd=asd116112;data source=ngAkisDB.mssql.somee.com;persist security info=False;initial catalog=ngAkisDB");
         }
 
         public DbSet<Department> Departments { get; set; }

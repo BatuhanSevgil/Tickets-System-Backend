@@ -1,14 +1,21 @@
 ﻿using Core.Entities.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace Entities.DTOs
 {
   public  class TicketFilterDto:IDTOs
     {
-        public string? Subject { get; set; }
+     
+
+#nullable enable     
+       public string? Subject { get; set; }
+      #nullable enable 
         public int? StatusId { get; set; }
+        #nullable enable 
         public int? ImportantId { get; set; }
+
+        #nullable enable
+        public int? DepartmentId { get; set; }
+
     }
 }

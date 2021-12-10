@@ -71,7 +71,7 @@ namespace DataAccess.Concrete.EntityFramework
             {
 
 
-                var detail = from _ticket in context.Tickets
+                var detail = from _ticket in context.Tickets.Where(wh=>wh.StatusId!=6)
                              join _status in context.Statuses on
                              _ticket.StatusId equals _status.StatusId
                              join _important in context.Importants on
@@ -113,7 +113,7 @@ namespace DataAccess.Concrete.EntityFramework
             {
 
 
-                var detail = from _ticket in context.Tickets
+                var detail = from _ticket in context.Tickets.Where(t => t.StatusId!=6)
                              join _status in context.Statuses on
                              _ticket.StatusId equals _status.StatusId
                              join _important in context.Importants on
@@ -234,18 +234,22 @@ namespace DataAccess.Concrete.EntityFramework
                 return detail.ToList();
             }
         }
-        public List<TicketDto> TicketHeaderFilterGetAll(Expression<Func<Ticket, bool>> filter = null)
-        {
+#nullable enable
+        public List<TicketDto> TicketHeaderFilterGetAll(TicketFilterDto? Header=null) 
+                {
 
             using (ngAkisContext context = new ngAkisContext())
             {
 
 
-                var detail = from _ticket in context.Tickets.Where(filter)
+                var detail = from _ticket in context.Tickets.WhereIf(Header.StatusId!=null , get=>get.StatusId==Header.StatusId).WhereIf(Header.Subject!=null,get=>get.Subject==Header.Subject)
+
 
 
                              join _detail in context.TicketDetails.FromSqlRaw(RawSqlCommands.LastAssigment)
+                           .WhereIf(Header.DepartmentId!=null,get=>get.toDepartmentId==Header.DepartmentId)
                              on _ticket.TicketId equals _detail.TicketId
+
 
 
 
@@ -264,6 +268,7 @@ namespace DataAccess.Concrete.EntityFramework
 
 
                                  ticketDetails = dal.TicketDetailsGetById(_ticket.TicketId),
+                                
                                  OpenPersonName = context.Persons.FirstOrDefault(person => person.PersonId == _ticket.OpenPersonId).RealName,
                                  Important = context.Importants.FirstOrDefault(first=>first.ImportantId==_detail.toImportantId).ImportantDetail,
                                  OpenDate = _ticket.OpenDate,

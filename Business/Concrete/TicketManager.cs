@@ -7,6 +7,7 @@ using Entity.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -37,11 +38,15 @@ namespace Business.Concrete
 
         public IResult AddWithTicketDetail(Ticket ticket, TicketDetail detail)
         {
+           
+            
             
             ticket.LastUpdateDate = DateTime.Now;
             ticket.OpenDate = DateTime.Now;
             detail.UpdateDate = DateTime.Now;
             detail.sendPersonId = ticket.OpenPersonId;
+            ticket.StatusId = detail.toStatusId;
+            ticket.ImportantId = detail.toImportantId;
 
             detail.TicketId =_ticketDAL.AddAndOutEntity(ticket).TicketId;
             _detailService.Add(detail);
@@ -71,7 +76,7 @@ namespace Business.Concrete
 
         public IDataResult<List<TicketDto>> TicketHeadersWithDetailGetAll()
         {
-            return new SuccessDataResult<List<TicketDto>>(_ticketDAL.TicketHeaderFilterGetAll());
+            return new SuccessDataResult<List<TicketDto>>(_ticketDAL.TicketHeaderFilterGetAll(null));
 
         }
 
@@ -125,12 +130,14 @@ namespace Business.Concrete
 
             TicketFilterDto filter = new TicketFilterDto();
 
-            filter.Subject = string.IsNullOrWhiteSpace(ticketFilter.Subject) == true ? null : ticketFilter.Subject;
-            filter.StatusId = ticketFilter.StatusId != 0 ? ticketFilter.StatusId : null;
+            filter.Subject = string.IsNullOrWhiteSpace(ticketFilter.Subject) && string.IsNullOrEmpty(ticketFilter.Subject
+                ) ? null : ticketFilter.Subject;
 
+            filter.StatusId = ticketFilter.StatusId > 0 ? ticketFilter.StatusId : null;
 
+            filter.DepartmentId = ticketFilter.DepartmentId > 0 ? ticketFilter.DepartmentId : null;
 
-            return new SuccessDataResult<List<TicketDto>>(_ticketDAL.TicketHeaderFilterGetAll(Get => Get.Subject == filter.Subject || Get.StatusId == filter.StatusId || Get.ImportantId == filter.ImportantId));
+            return new SuccessDataResult<List<TicketDto>>(_ticketDAL.TicketHeaderFilterGetAll(filter));
         }
 
         public IDataResult<List<TicketDto>> TicketDetailFilter(TicketDetailFilterDTO detailFilter)

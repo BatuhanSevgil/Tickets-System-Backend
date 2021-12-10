@@ -7,6 +7,7 @@ namespace Entities.DTOs
 {
     public class TicketDetailFilterDTO:IDTOs
     {
+        #nullable enable
         public string? Description { get; set; }
         public int? sendPersonId { get; set; }
         public int? toPersonId { get; set; }

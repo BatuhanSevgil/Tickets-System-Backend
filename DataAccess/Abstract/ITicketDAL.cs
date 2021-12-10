@@ -12,7 +12,7 @@ namespace DataAccess.Abstract
     public interface ITicketDAL:EfEntityRepositoryBase<Ticket>
     {
         public TicketDto TicketHeaderWithDetailGetById(int ticketId);
-        public List<TicketDto> TicketHeaderFilterGetAll(Expression<Func<Ticket, bool>> detailFilter = null);
+        public List<TicketDto> TicketHeaderFilterGetAll(TicketFilterDto Header);
         public List<TicketDto> TicketDetailFilterGetAll(Expression<Func<TicketDetail, bool>> detailFilter = null);
         public List<TicketDto> TicketHeaderWithDetailGetByOpenPersonId(int openPersonId);
         public List<TicketDto> TicketHeaderWithDetailGetLastAssignPersonId(int lastPersonId);
